@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.css";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -18,10 +18,15 @@ function App() {
   const [ticketId, setTicketId] = useState(1);
   const [ticketType, setTicketType] = useState("");
   const [ticketDescription, setTicketDescription] = useState("");
-  const [ticketData, setTicketData] = useState([]);
+  const [ticketData, setTicketData] = useState(() => {
+    return JSON.parse(localStorage.getItem("tickets")) || [];
+  });
+  const [editKey, setEditKey] = useState(null);
+  const [showTicket, setShowTicket] = useState([]);
 
   const addTicket = (e) => {
     e.preventDefault();
+
     setTicketId((prevState) => prevState + 1);
     const newObj = {
       id: ticketId,
@@ -36,7 +41,6 @@ function App() {
     });
     setTicketType("");
     setTicketDescription("");
-    localStorage.setItem("tickets",JSON.stringify(ticketData))
   };
 
   const deleteTicket = (key) => {
@@ -47,24 +51,55 @@ function App() {
       }
     });
     setTicketData(result);
+    // localStorage.setItem("tickets", JSON.stringify(result));
+
     toast.success("deleted!", {
       position: "top-center",
     });
   };
 
-  const editTicket = (key) => {
-    const result = ticketData.filter((elm, index) => {
+  const editModal = (key) => {
+    setShowModal(true);
+    setEdit(true);
+
+    const getTickets = localStorage.getItem("tickets");
+    const getCurrentTicket = JSON.parse(getTickets).filter((elm, index) => {
       if (key === index) {
         return elm;
       }
     });
-    setShowModal(true);
-    const [data] = result;
-    setTicketType(data?.type);
-    setTicketDescription(data?.description);
-    console.log(ticketType, ticketDescription);
-    setEdit(true);
+    const [values] = getCurrentTicket;
+    const { id, type, description } = values;
+    setEditKey(id);
+    setTicketType(type);
+    setTicketDescription(description);
   };
+
+  function updateTicket(e) {
+    const getTickets = JSON.parse(localStorage.getItem("tickets"));
+    const getCurrentTicket = getTickets.map((elm) => {
+      if (editKey === elm.id) {
+        return {
+          id: editKey,
+          type: ticketType,
+          description: ticketDescription,
+        };
+      } else {
+        return elm;
+      }
+    });
+    setTicketData(getCurrentTicket);
+    toast.success("Ticket type edited successfully!", {
+      position: "top-center",
+    });
+    setShowModal(false);
+    setTicketType("");
+    setTicketDescription("");
+  }
+  useEffect(() => {
+    localStorage.setItem("tickets", JSON.stringify(ticketData));
+  }, [ticketData]);
+
   return (
     <div>
       <Toaster
@@ -103,7 +138,7 @@ function App() {
             </div>
           </div>
           <div className="mt-[100px] ">
-            <div className="px-4 sm:px-6 lg:px-8">
+            <div className="px-4 sm:px-6 lg:px-8 relative border">
               <div className="sm:flex sm:items-end w-full mx-auto  justify-end">
                 <div className=" ">
                   <button
@@ -119,33 +154,34 @@ function App() {
                 </div>
               </div>
               {/* table */}
-              {ticketData.length > 0 ? (
-                <div className="relative overflow-x-auto rounded-md mt-8 border drop-shadow-md">
-                  <table className="w-full text-sm text-left text-gray-500 ">
-                    <thead className="text-xs text-gray-700 uppercase bg-[#DAEFF5]">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-blue-500 text-center"
-                        >
-                          Ticket Type
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-blue-500 text-center"
-                        >
-                          Description
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-blue-500 text-center"
-                        >
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="">
-                      {ticketData.map((item, key) => (
+
+              <div className=" overflow-x-auto rounded-md mt-8  drop-shadow-md">
+                <table className="w-full text-sm text-left text-gray-500 ">
+                  <thead className="text-xs text-gray-700 uppercase bg-[#DAEFF5]">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-blue-500 text-center"
+                      >
+                        Ticket Type
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-blue-500 text-center"
+                      >
+                        Description
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-blue-500 text-center"
+                      >
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="">
+                    {ticketData.length > 0 ? (
+                      ticketData.map((item, key) => (
                         <tr
                           key={key}
                           className="bg-white border-b border-gray-200 font-medium text-gray-900 "
@@ -159,26 +195,29 @@ function App() {
                           <td className="px-6 py-4 border text-center">
                             <div className="flex justify-center  p-1">
                               <AiOutlineEdit
-                                onClick={() => editTicket(key)}
-                                className="cursor-pointer border text-3xl rounded p-1"
+                                onClick={() => editModal(key)}
+                                className="cursor-pointer border text-3xl rounded p-1 transition hover:border-blue-400 hover:text-blue-500"
                               />
                               <AiOutlineDelete
                                 onClick={() => deleteTicket(key)}
-                                className="cursor-pointer border text-3xl ml-2 rounded p-1"
+                                className="cursor-pointer border text-3xl ml-2 rounded p-1 transition hover:border-blue-400 hover:text-blue-500"
                               />
                             </div>
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className="flex justify-center h-[500px] items-center font-semibold text-2xl">
-                  {" "}
-                  Please Add Some Ticket Type{" "}
-                </div>
-              )}
+                      ))
+                    ) : (
+                      <tr className="bg-white border-b border-gray-200 font-medium text-gray-900 ">
+                        <td className="px-6 py-4 border text-center">Empty</td>
+                        <td className="px-6 py-4 border text-center overflow-x-auto">
+                          Empty
+                        </td>
+                        <td className="px-6 py-4 border text-center">N/A</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
           {/* modal */}
@@ -189,7 +228,11 @@ function App() {
           >
             {showModal ? (
               <div
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  setTicketType("");
+                  setTicketDescription("");
+                }}
                 className="fixed inset-0 transition bg-gray-500 bg-opacity-75"
               ></div>
             ) : (
@@ -198,8 +241,12 @@ function App() {
             <div className="relative bg-white rounded-lg shadow ">
               <button
                 type="button"
-                onClick={() => setShowModal(false)}
-                className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
+                onClick={() => {
+                  setShowModal(false);
+                  setTicketType("");
+                  setTicketDescription("");
+                }}
+                className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center "
               >
                 <svg
                   aria-hidden="true"
@@ -227,6 +274,7 @@ function App() {
                     <input
                       type="text"
                       value={ticketType}
+                      name="ticketType"
                       onChange={(e) => setTicketType(e.target.value)}
                       className="bg-gray-50 border border-gray-00 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
                       required
@@ -237,8 +285,10 @@ function App() {
                       Description
                     </label>
                     <textarea
+                      type="text"
                       onChange={(e) => setTicketDescription(e.target.value)}
                       value={ticketDescription}
+                      name="ticketDescription"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  "
                     />
                   </div>
@@ -248,19 +298,31 @@ function App() {
                       onClick={() => {
                         setShowModal(false);
                         setTicketType("");
-                        setTicketDescription("")
+                        setTicketDescription("");
+                        setEdit(false);
                       }}
                       className="w-1/3 text-gray-500 border  hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                     >
                       Cancel
                     </button>
 
-                    <button
-                      type="submit"
-                      className="ml-2 w-1/2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                    >
-                      {edit ? "Edit Ticket Type" : "Add Ticket Type"}
-                    </button>
+                    {edit ? (
+                      <button
+                        type="button"
+                        onClick={(e) => updateTicket(e)}
+                        className="ml-2 w-1/2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      >
+                        Save changes
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        id="add"
+                        className="ml-2 w-1/2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      >
+                        Add Ticket Type
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>
