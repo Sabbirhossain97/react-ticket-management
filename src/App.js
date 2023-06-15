@@ -117,8 +117,8 @@ function App() {
 
         <div className="bg-[#D8F2EF] w-screen mt-24 md:mt-0">
           <div className="relative bg-[#f0f5f4] w-full h-20">
-            <div className="absolute top-5 right-8  rounded-full p-1">
-              <AiOutlineUser className="text-2xl" />
+            <div className="absolute top-5 right-8 rounded-full p-1 border border-gray-300">
+              <AiOutlineUser className="text-2xl " />
             </div>
           </div>
           <div className="mt-[100px] mx-auto md:w-full ">
