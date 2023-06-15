@@ -1,7 +1,7 @@
 import React from "react";
 import { AiOutlineEdit } from "react-icons/ai";
 import { AiOutlineDelete } from "react-icons/ai";
-import { message, Popconfirm } from "antd";
+import { Popconfirm } from "antd";
 
 export default function DataTable({
   ticketData,

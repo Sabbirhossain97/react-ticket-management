@@ -1,5 +1,4 @@
 import React from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 export default function Modal({
   setShowModal,
@@ -14,7 +13,7 @@ export default function Modal({
   showModal,
 }) {
   return (
-      <motion.div
+      <div
         className={`fixed top-1/4 left-8 md:left-1/3 ${
           showModal ? "" : "hidden"
         } w-10/12 md:w-1/2 xl:w-1/3 max-h-full`}
@@ -124,6 +123,6 @@ export default function Modal({
             </form>
           </div>
         </div>
-      </motion.div>
+      </div>
   );
 }
