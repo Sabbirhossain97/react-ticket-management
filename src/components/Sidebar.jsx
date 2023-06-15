@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ImStatsDots } from "react-icons/im";
 import { MdOutlineCategory } from "react-icons/md";
 import { BsTicketDetailedFill } from "react-icons/bs";
@@ -6,7 +6,6 @@ import { AiOutlineProfile } from "react-icons/ai";
 import { ImUsers } from "react-icons/im";
 import { BiAddToQueue } from "react-icons/bi";
 import { AiOutlineLaptop } from "react-icons/ai";
-import { AiOutlineMenu } from "react-icons/ai";
 
 export default function Sidebar() {
   return (
@@ -14,7 +13,7 @@ export default function Sidebar() {
       <div
         className={`hidden md:block transition duration-300 h-full px-3 w-[200px]  py-4 overflow-y-auto bg-[#070a52]  `}
       >
-        <img src="/groupM.png" width="150px" height="150px" className="p-4" />
+        <img src="/groupM.png" width="150px" height="150px" className="p-4" alt="error" />
         <ul className="flex flex-col space-y-6 font-medium text-gray-300 mt-4 ">
           <li>
             <p className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
