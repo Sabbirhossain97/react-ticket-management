@@ -40,10 +40,10 @@ function App() {
     setTicketDescription("");
   };
 
-  const deleteTicket = (key) => {
+  const deleteTicket = (id) => {
     setTicketId((prevState) => prevState - 1);
-    const result = ticketData.filter((elm, index) => {
-      if (key !== index) {
+    const result = ticketData.filter((elm) => {
+      if (id !== elm.id) {
         return elm;
       }
     });
@@ -56,13 +56,13 @@ function App() {
   const editModal = (key) => {
     setShowModal(true);
     setEdit(true);
-
     const getTickets = localStorage.getItem("tickets");
-    const getCurrentTicket = JSON.parse(getTickets).filter((elm, index) => {
-      if (key === index) {
+    const getCurrentTicket = JSON.parse(getTickets).filter((elm) => {
+      if (key === elm.id) {
         return elm;
       }
     });
+    console.log(getCurrentTicket)
     const [values] = getCurrentTicket;
     const { id, type, description } = values;
     setEditKey(id);
@@ -121,7 +121,7 @@ function App() {
               <AiOutlineUser className="text-2xl " />
             </div>
           </div>
-          <div className="mt-[100px] mx-auto md:w-full ">
+          <div className="mt-[100px] mx-auto md:w-full relative min-h-screen">
             <div className="px-4 sm:px-6 lg:px-8 relative ">
               <div className="flex md:w-10/12 w-full mx-auto justify-end ">
                 <div className=" ">

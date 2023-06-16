@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.ant-btn-primary{
+    background-color: #1677ff !important;
+}
+
+.ant-btn-primary:hover{
+    background-color: #2a72d6 !important;
+}

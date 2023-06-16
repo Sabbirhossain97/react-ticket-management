@@ -10,9 +10,8 @@ export default function DataTable({
   startIndex,
   endIndex,
 }) {
-  const confirm = (key) => {
-    console.log(key);
-    deleteTicket(key);
+  const confirm = (id) => {
+    deleteTicket(id);
   };
 
   const cancel = (e) => {
@@ -38,7 +37,9 @@ export default function DataTable({
           <tbody className="">
             {ticketData.length > 0 ? (
               ticketData
-                .filter((item, key) => key >= startIndex && key <= endIndex)
+                .filter(
+                  (item, index) => index >= startIndex && index <= endIndex
+                )
 
                 .map((item, key) => (
                   <tr
@@ -54,14 +55,14 @@ export default function DataTable({
                     <td className="px-6 py-4 border text-center">
                       <div className="flex justify-center  p-1">
                         <AiOutlineEdit
-                          onClick={() => editModal(key)}
+                          onClick={() => editModal(item.id)}
                           className="cursor-pointer border text-3xl rounded p-1 transition hover:border-blue-400 hover:text-blue-500"
                         />
 
                         <Popconfirm
                           title="Delete"
                           description="Are you sure to delete this ?"
-                          onConfirm={() => confirm(key)}
+                          onConfirm={() => confirm(item.id)}
                           onCancel={cancel}
                           okText="Yes"
                           cancelText="No"
