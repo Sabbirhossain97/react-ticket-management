@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 
-export default function Pagniation({ ticketData,currentPage,itemsPerPage,setCurrentPage }) {
-
+export default function Pagniation({
+  ticketData,
+  currentPage,
+  itemsPerPage,
+  setCurrentPage,
+}) {
   const [totalPage, setTotalPage] = useState(1);
 
   let paginationArray = [];
@@ -24,6 +28,7 @@ export default function Pagniation({ ticketData,currentPage,itemsPerPage,setCurr
   useEffect(() => {
     setTotalPage(Math.ceil(ticketData.length / itemsPerPage));
   }, [itemsPerPage, ticketData.length]);
+
   return (
     <div>
       <nav className="flex justify-end w-10/12 mx-auto mt-4">
@@ -31,10 +36,10 @@ export default function Pagniation({ ticketData,currentPage,itemsPerPage,setCurr
           <li>
             <p
               onClick={() => previousPage()}
-              className={`cursor-pointer ${
+              className={` ${
                 currentPage === 1 || ticketData.length === 0
                   ? "cursor-not-allowed"
-                  : ""
+                  : "cursor-pointer"
               } relative block rounded bg-transparent px-2 py-2.5 text-sm  transition-all duration-300 `}
             >
               <IoIosArrowBack className="text-gray-500 hover:text-blue-500" />
@@ -64,10 +69,10 @@ export default function Pagniation({ ticketData,currentPage,itemsPerPage,setCurr
           <li>
             <p
               onClick={() => nextPage()}
-              className={`cursor-pointer ${
+              className={` ${
                 currentPage === totalPage || ticketData.length === 0
                   ? "cursor-not-allowed"
-                  : ""
+                  : "cursor-pointer"
               } relative block rounded bg-transparent px-2 py-2.5 text-sm  transition-all duration-300 `}
             >
               <IoIosArrowForward className="text-gray-500 hover:text-blue-500" />

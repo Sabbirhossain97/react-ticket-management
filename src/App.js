@@ -11,7 +11,9 @@ import Footer from "./components/Footer";
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [ticketId, setTicketId] = useState(1);
+  const [ticketId, setTicketId] = useState(() => {
+    return JSON.parse(localStorage.getItem("tickets")).length || 1;
+  });
   const [ticketType, setTicketType] = useState("");
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketData, setTicketData] = useState(() => {
@@ -24,7 +26,6 @@ function App() {
   const addTicket = (e) => {
     e.preventDefault();
 
-    setTicketId((prevState) => prevState + 1);
     const newObj = {
       id: ticketId,
       type: ticketType,
@@ -40,8 +41,16 @@ function App() {
     setTicketDescription("");
   };
 
+  useEffect(() => {
+    if (ticketData.length === 0) {
+      setTicketId(1);
+    } else {
+      setTicketId((prevState) => prevState + 1);
+    }
+  }, [ticketData]);
+
   const deleteTicket = (id) => {
-    setTicketId((prevState) => prevState - 1);
+    // setTicketId((prevState) => prevState - 1);
     const result = ticketData.filter((elm) => {
       if (id !== elm.id) {
         return elm;
@@ -62,7 +71,7 @@ function App() {
         return elm;
       }
     });
-    console.log(getCurrentTicket)
+    console.log(getCurrentTicket);
     const [values] = getCurrentTicket;
     const { id, type, description } = values;
     setEditKey(id);
